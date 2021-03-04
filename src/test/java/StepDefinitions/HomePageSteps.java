@@ -2,14 +2,15 @@ package StepDefinitions;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
-import io.cucumber.java.pt.*;
+import io.cucumber.java.pt.Dado;
+import io.cucumber.java.pt.Entao;
+import io.cucumber.java.pt.Quando;
 import org.junit.Assert;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pageFactory.HomePage;
 
 import java.net.MalformedURLException;
-import java.util.concurrent.TimeUnit;
 
 public class HomePageSteps extends AutomationChromeBase {
 
@@ -24,13 +25,8 @@ public class HomePageSteps extends AutomationChromeBase {
         homePage.closeWelcomeContactPopup();
     }
 
-    @Quando("aciona o link para solicitação de orçamento")
-    public void requestBudget() {
-        homePage.requestBudget();
-    }
-
     @Quando("^aciona o menu (.*)$")
-    public void accessMenu(String menuName) throws InterruptedException {
+    public void accessMenu(String menuName) {
         homePage.accessMenu(menuName);
     }
 
@@ -41,8 +37,10 @@ public class HomePageSteps extends AutomationChromeBase {
 
     @Entao("^cliente é redirecionado para a página (.*)$")
     public void isBrowserAtPage(String pageTitle) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        Assert.assertTrue(wait.until(ExpectedConditions.titleIs(pageTitle + " - Auditeste")));
+        // This wait is only for viewing the screen on the emulator during testing
         Thread.sleep(3000L);
-        Assert.assertTrue(homePage.isBrowserAtPage(pageTitle));
         driver.close();
         driver.quit();
     }

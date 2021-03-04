@@ -3,10 +3,11 @@ package pageFactory;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage {
 
@@ -15,55 +16,32 @@ public class HomePage {
     @FindBy(xpath = "//*[@id=\"header\"]/div/div[2]/div[1]/div[2]/button")
     WebElement expandMenuBtn;
 
+    @FindBy(xpath = "//*[@id=\"menu-menu-topo-1\"]/li[3]/span")
+    WebElement expandServicesSubmenuBtn;
+
     @FindBy(xpath = "//*[@id=\"sgpb-popup-dialog-main-div-wrapper\"]/div/img")
     WebElement contactPopupCloseBtn;
-
-    @FindBy(xpath = "//*[@id=\"rodape-faixa-preta\"]/div[2]/div/div/div[1]/a")
-    WebElement requestBudgetBtn;
-
-    @FindBy(id = "menu-item-290")
-    WebElement servicesMenuBtn;
-
 
     public HomePage(AndroidDriver<AndroidElement> driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
     }
 
-    public void closeWelcomeContactPopup(){
+    public void closeWelcomeContactPopup() {
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(ExpectedConditions.elementToBeClickable(contactPopupCloseBtn));
         contactPopupCloseBtn.click();
     }
 
-    public void requestBudget() {
-        requestBudgetBtn.click();
-    }
-
-    public void accessMenu(String menuName) throws InterruptedException {
+    public void accessMenu(String menuName) {
         expandMenuBtn.click();
-        int menuIndex = 1;
-        switch (menuName){
-            case "Quem somos":
-                menuIndex = 2;
-                break;
-        }
-//        driver.findElement(By.xpath("//*[@id=\"menu-menu-topo-1\"]/li[" + menuIndex + "]/a")).click();
-        driver.findElement(By.xpath("//ul/li/a[@text='" + menuName + "']")).click();
-//        Thread.sleep(5000L);
-//        driver.findElement(By.xpath("//ul/li[contains(.,'" + menuName + "')]")).click();
+        driver.findElement(By.xpath("//*[@id=\"menu-menu-topo-1\"]/li/a[contains(.,'" + menuName + "')]")).click();
     }
 
     public void accessServicePage(String service) throws InterruptedException {
         expandMenuBtn.click();
-        openServicesSubmenu();
-//      driver.findElement(By.xpath("//ul/li/a[contains(.,'" + service + "')]")).click();
+        expandServicesSubmenuBtn.click();
+        driver.findElement(By.xpath("//*[@id=\"menu-menu-topo-1\"]/li/ul/li/a[contains(.,'" + service + "')]")).click();
     }
 
-    public boolean isBrowserAtPage(String pageTitle){
-        return driver.getPageSource().contains("//" + pageTitle);
-    }
-
-    private void openServicesSubmenu() throws InterruptedException {
-        servicesMenuBtn.click();
-        Thread.sleep(1000L);
-    }
 }
